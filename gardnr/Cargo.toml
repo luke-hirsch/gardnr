@@ -1,0 +1,10 @@
+[package]
+name = "gardr"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = { version = "4.5.37", features = ["derive"] }
+clap_complete = "4.5.48"
+clap_mangen = "0.2.26"
+wild = "2.2.1"

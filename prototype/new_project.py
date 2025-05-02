@@ -3,7 +3,6 @@ import shutil
 import subprocess
 from pathlib import Path
 import readline
-import glob
 
 def complete_path(text, state):
     # expand ~ and environment vars
