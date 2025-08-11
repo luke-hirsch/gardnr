@@ -6,6 +6,19 @@ pub fn check_python_installed() -> Option<String> {
     is_installed(DEFAULT_EXECUTABLES.python)
 }
 
+pub fn check_package_installed(packagename: &str) -> Option<bool> {
+    let show_output = Command::new("pip")
+        .arg("show")
+        .arg(packagename)
+        .output()
+        .expect("Failed to run pip show");
+    if show_output.status.success() {
+        Some(true)
+    } else {
+        Some(false)
+    }
+}
+
 fn package_installation(packagename: &str, update: Option<bool>) {
     let update = update.unwrap_or(false);
     if update {
@@ -32,12 +45,8 @@ fn package_installation(packagename: &str, update: Option<bool>) {
         }
     } else {
         // Check if installed
-        let show_output = Command::new("pip")
-            .arg("show")
-            .arg(packagename)
-            .output()
-            .expect("Failed to run pip show");
-        if show_output.status.success() {
+        let package_installed = package_inscheck_package_installed(packagename);
+        if package_installed {
             println!(
                 "Package {} is already installed:\n{}",
                 packagename,
@@ -68,8 +77,42 @@ fn package_installation(packagename: &str, update: Option<bool>) {
     }
 }
 
-pub fn scaffold_django(project_name: &str) {}
+pub fn scaffold_django(project_name: &str) {
+    // checking if django is installed
+    let check_django_installed = check_package_installed("django");
+    if !check_django_installed {
+        package_installation("django", true)
+    }
 
-pub fn scaffold_flask(project_name: &str, path: &Path) {}
+    // calling django-admin startproject
+    let startproject_output = Command::new("django-admin")
+        .arg("startproject")
+        .arg(project_name)
+        .output()
+        .expect("Failed to run django-admin startproject");
 
-pub fn scaffold_ml(project_name: &str, path: &Path, lib: &str) {}
+    if startproject_output.status.success() {
+        println!(
+            "Django project {} created successfully:\n{}",
+            project_name,
+            String::from_utf8_lossy(&startproject_output.stdout)
+        );
+    } else {
+        eprintln!(
+            "Failed to create Django project {}:\n{}",
+            project_name,
+            String::from_utf8_lossy(&startproject_output.stderr)
+        );
+    }
+}
+
+// pub fn scaffold_flask(project_name: &str, path: &Path) {
+//     // checking if flask is installed
+//     let check_flask_installed = check_package_installed("flask");
+//     if !check_flask_installed {
+//         package_installation("flask", true)
+//     }
+//     // scaffolding flask project
+// }cd
+
+// pub fn scaffold_ml(project_name: &str, path: &Path, lib: &str) {}

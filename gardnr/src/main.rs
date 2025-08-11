@@ -62,15 +62,23 @@ fn main() {
         if args.id != "000" {
             project_status(args.id);
         } else if new_project.name != "Project" {
-            create_project(new_project);
+            if let Err(e) = create_project(new_project) {
+                eprintln!("Error creating project: {}", e);
+            }
         } else {
-            questionnaire();
+            if let Err(e) = questionnaire() {
+                eprintln!("Error in questionnaire: {}", e);
+            }
         }
     } else if args.mode == "create" {
-        create_project(new_project);
+        if let Err(e) = create_project(new_project) {
+            eprintln!("Error creating project: {}", e);
+        }
     } else if args.mode == "update" {
         if args.id == "000" {
-            create_project(new_project);
+            if let Err(e) = create_project(new_project) {
+                eprintln!("Error creating project: {}", e);
+            }
         } else {
             update_project(new_project.name, args.id);
         }

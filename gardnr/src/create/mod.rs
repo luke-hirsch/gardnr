@@ -1,9 +1,8 @@
-use crate::tech::Tech;
 use std::{fs, io, path::PathBuf};
 
 pub struct Component {
     pub name: String,
-    pub tech: Tech,
+    pub tech: String,
 }
 pub struct Project {
     pub name: String,
